@@ -45,11 +45,11 @@ async function updateTabInfo(tab) {
 }
 
 chrome.runtime.onInstalled.addListener(async function () {
-  const d = new Date();
-  colDate = `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
-  await chrome.storage.local.clear();
-  await chrome.storage.local.set({ tracker: {} });
-  await chrome.storage.local.set({ collectionDate: colDate });
+  await initialize();
+});
+
+chrome.runtime.onStartup.addListener(async function () {
+  await initialize();
 });
 
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
@@ -73,3 +73,11 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
     await updateTabInfo(tab);
   }
 });
+async function initialize() {
+  const d = new Date();
+  colDate = `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
+  await chrome.storage.local.clear();
+  await chrome.storage.local.set({ tracker: {} });
+  await chrome.storage.local.set({ collectionDate: colDate });
+}
+
